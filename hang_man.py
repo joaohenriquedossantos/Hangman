@@ -1,10 +1,10 @@
 from random_word import RandomWords
 import os
 
-from hangman_arts import gameover_logo, hangman_logo, hangman
+from hangman_arts import gameover_logo, hangman_logo, hangman_stages, hangman_lives
 
 
-clear = lambda: os.system('clear')
+clear_terminal = lambda: os.system('clear')
 
 stop_the_game = lambda blank_spaces: True if '_' not in blank_spaces else False
 
@@ -13,60 +13,45 @@ words = RandomWords()
 random_word = str(words.get_random_word()).upper()
 
 blank_spaces = ['_' for char in random_word]
-word_letters = [char for char in random_word]
-letters_indexes = [index for index in range(len(word_letters))]
+letters = [char for char in random_word]
+indexes = [index for index in range(len(letters))]
 
-letters_letf = len(word_letters)
+# letters_allowed = []
 
-display = ''
-hangman_life = -1
-letters_tried = []
+letters_letf = len(letters)
 
-clear()
-while True:
-    guessed_is_wrong = []
-    hangman_logo()
-    letter_guessed = input('Guess a letter: ').upper()
-    if letter_guessed not in letters_tried:
-        display = ''
-        letters_tried.append(letter_guessed)
-        for index in letters_indexes:
-            if letter_guessed == word_letters[index]:
-                blank_spaces[index] = letter_guessed
-                guessed_is_wrong.append(False)
-            else:
-                guessed_is_wrong.append(True)
-    
+stages = hangman_stages()
+hearts = hangman_lives()
+hangman_life = len(hangman_stages())
+tried_letters = []
 
-        for letters in blank_spaces:
-            display += letters + ' '
+def list_to_string(list_of_chars):
+    string = ' '.join(list_of_chars)
+    return string
 
-        clear()
-
-        if stop_the_game(blank_spaces):
-            break
-        
-        if False not in guessed_is_wrong:
-            hangman_life += 1
-            print(hangman(hangman_life))
-        
+clear_terminal()
+while not hangman_life == 0:
+    guessed_letter = str(input('Guess a letter: ')).upper()
+    if guessed_letter not in tried_letters:
+        tried_letters.append(guessed_letter)
+        for index in indexes:
+            if guessed_letter == letters[index]:
+                blank_spaces[index] = guessed_letter
+        if guessed_letter not in letters:
+            clear_terminal()
+            print(f'''You've guessed "{guessed_letter}", that's not in the word. You lose a life."''')
+            hangman_life -= 1
+            print(f'\nLives left: {hearts[hangman_life]}')
+            print(stages[hangman_life])
+            display = list_to_string(blank_spaces)
+            print(display)
         else:
-            if hangman_life >= 0:
-                print(hangman(hangman_life))
+            clear_terminal()
+            print(f'\nLives left: {hearts[hangman_life]}')
+            if hangman_life < len(hangman_stages()):
+                print(stages[hangman_life])
 
-        if hangman_life == 6:
-            print(hangman_life)
-            clear()
-            gameover_logo()
-            print(f'The word was: {random_word} \n')
-            break
-
-        print(display + '\n')
-        print(f'Guessed letters: {letters_tried}')
+            display = list_to_string(blank_spaces)
+            print(display)
     else:
-        clear()
-        if hangman_life >= 0:
-            clear()
-            print(hangman(hangman_life))
-        print(display + '\n')
-        print(f'Guessed letters: {letters_tried}')
+        print(f'''You've already guessed "{guessed_letter}"''')
