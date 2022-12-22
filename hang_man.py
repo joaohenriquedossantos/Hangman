@@ -41,13 +41,13 @@ while not hangman_life == 0:
             clear_terminal()
             print(f'''You've guessed "{guessed_letter}", that's not in the word. You lose a life."''')
             hangman_life -= 1
-            print(f'\nLives left: {hearts[hangman_life]}')
+            print(f'\nLives left: {hearts[hangman_life-1]}')
             print(stages[hangman_life])
             display = list_to_string(blank_spaces)
             print(display)
         else:
             clear_terminal()
-            print(f'\nLives left: {hearts[hangman_life]}')
+            print(f'\nLives left: {hearts[hangman_life-1]}')
             if hangman_life < len(hangman_stages()):
                 print(stages[hangman_life])
 
