@@ -6,16 +6,6 @@ from hangman_arts import gameover_logo, hangman_logo, hangman_stages, hangman_li
 
 clear_terminal = lambda: os.system('clear')
 
-stop_the_game = lambda blank_spaces: True if '_' not in blank_spaces else False
-
-
-words = RandomWords()
-random_word = str(words.get_random_word()).upper()
-
-blank_spaces = ['_' for char in random_word]
-letters = [char for char in random_word]
-indexes = [index for index in range(len(letters))]
-
 letters_allowed = [
     'A','B','C','D','E',
     'F','G','H','I','J',
@@ -24,25 +14,40 @@ letters_allowed = [
     'U','V','W','X','Y','Z'
 ]
 
-letters_letf = len(letters)
+def setup_the_game():
 
-stages = hangman_stages()
-lives = hangman_lives()
+    words = RandomWords()
+    random_word = str(words.get_random_word()).upper()
 
-attempts_left = len(hangman_stages())
-lives_left = attempts_left-1
+    blank_spaces = ['_' for char in random_word]
+    letters = [char for char in random_word]
+    indexes = [index for index in range(len(letters))]
 
-start_logo = True
-gameover = False
 
-tried_letters = []
+    letters_left = len(letters)
+
+    stages = hangman_stages()
+    lives = hangman_lives()
+
+    attempts_left = len(hangman_stages())
+    lives_left = attempts_left-1
+
+    start_logo = True
+    gameover = False
+
+    tried_letters = []
+    return random_word, blank_spaces, letters, indexes, letters_left, stages, lives, attempts_left, lives_left, start_logo, gameover, tried_letters
+
+
+random_word, blank_spaces, letters, indexes, letters_left, stages, lives, attempts_left, lives_left, start_logo, gameover, tried_letters = setup_the_game()
+
 
 def list_to_string(list_of_chars):
     string = ' '.join(list_of_chars)
     return string
 
 clear_terminal()
-while not attempts_left == 0:
+while True:
     if start_logo:
         hangman_logo()
     guessed_letter = str(input('Guess a letter: ')).upper()
@@ -79,3 +84,14 @@ while not attempts_left == 0:
     if attempts_left == 0:
         clear_terminal()
         gameover_logo()
+        print(f'The word was {random_word}\n')
+        play_again = input('Would you like to play again? Type "no" to exit or press enter to play it again. ')
+        if play_again == 'no':
+            break
+        clear_terminal()
+
+        random_word, blank_spaces, letters, indexes, letters_left, stages, lives, attempts_left, lives_left, start_logo, gameover, tried_letters = setup_the_game()
+
+    if '_' not in blank_spaces:
+        print('You won!')
+        break
