@@ -32,6 +32,9 @@ lives = hangman_lives()
 attempts_left = len(hangman_stages())
 lives_left = attempts_left-1
 
+start_logo = True
+gameover = False
+
 tried_letters = []
 
 def list_to_string(list_of_chars):
@@ -40,8 +43,12 @@ def list_to_string(list_of_chars):
 
 clear_terminal()
 while not attempts_left == 0:
+    if start_logo:
+        hangman_logo()
     guessed_letter = str(input('Guess a letter: ')).upper()
+    start_logo = False
     if guessed_letter not in letters_allowed:
+        clear_terminal()
         print(f'Sorry, "{guessed_letter}" is not allowed.')
     else:
         if guessed_letter not in tried_letters:
@@ -68,3 +75,7 @@ while not attempts_left == 0:
                 print(display)
         else:
             print(f'''You've already guessed "{guessed_letter}"''')
+
+    if attempts_left == 0:
+        clear_terminal()
+        gameover_logo()
